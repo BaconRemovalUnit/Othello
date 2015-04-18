@@ -1,6 +1,15 @@
+import java.util.ArrayList;
+
+/*
+*1/true is black, -1/false is white
+*int[][] indicates x,y coordinates
+*/
 
 public class Board {
+	private final int white = -1;
+	private final int black = 1;
 	int[][] board = new int[8][8];
+	int count;
 	
 	public Board(){
 		for(int i = 0; i<board.length; i++){
@@ -12,7 +21,6 @@ public class Board {
 		board[4][4]=-1;
 		board[3][4]=1;
 		board[4][3]=1;
-		place(5,5,true);
 	}
 	
 	public void place(int x, int y, boolean side){
@@ -38,6 +46,19 @@ public class Board {
 		return false;
 	}
 	
+	//generate all the posible moves for one player
+	public ArrayList<Board> genChild(int color){
+		ArrayList<Board> moves = new ArrayList<Board>();
+		if(color == white){
+			
+			
+		}
+		else{
+			
+		}
+		return moves;
+	}
+	
 	public boolean boardFilled(){
 		for(int j = 0; j<board.length; j++){
 			for(int i = 0; i<board[0].length;i++){
@@ -51,9 +72,9 @@ public class Board {
 	public void print(){
 		for(int j = 0; j<board.length; j++){
 			for(int i = 0; i<board[0].length;i++){
-				if(board[i][j] == 1)
+				if(board[i][j] == black)
 					System.out.print("O\t");
-				else if(board[i][j] == -1)
+				else if(board[i][j] == white)
 				System.out.print("X\t");
 				else
 				System.out.print("-\t");
@@ -61,5 +82,4 @@ public class Board {
 			System.out.println();
 		}
 	}
-	
 }
