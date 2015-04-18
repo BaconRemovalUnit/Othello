@@ -26,7 +26,7 @@ public class MinmaxTree {
 		this.b = b;
 	}
 	
-	public void genNeighbors(){
+	public void genNodes(){
 		
 		
 		

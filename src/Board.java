@@ -21,6 +21,7 @@ public class Board {
 		board[4][4]=-1;
 		board[3][4]=1;
 		board[4][3]=1;
+		count = 0;
 	}
 	
 	public void place(int x, int y, boolean side){
@@ -50,13 +51,27 @@ public class Board {
 	public ArrayList<Board> genChild(int color){
 		ArrayList<Board> moves = new ArrayList<Board>();
 		if(color == white){
-			
-			
+			for(int j = 0; j<board.length; j++){
+				for(int i = 0; i<board[0].length;i++){
+					
+				}
+			}
 		}
 		else{
 			
 		}
 		return moves;
+	}
+	
+	//create a new instace of the board
+	public Board copyBoard(Board a){
+		Board b = new Board();
+		for(int i = 0; i<a.board.length; i++){
+			for(int j = 0; j<a.board[0].length;j++){
+				b.board[i][j] = 0;
+			}
+		}
+		return b;
 	}
 	
 	public boolean boardFilled(){
@@ -68,6 +83,18 @@ public class Board {
 		}
 		return true;
 	}
+	
+	public void updateScore(){
+		count = 0;
+		for(int j = 0; j<board.length; j++){
+			for(int i = 0; i<board[0].length;i++){
+			count += count + board[i][j];
+			}
+		}
+		this.count  = count;
+	}
+	
+	
 
 	public void print(){
 		for(int j = 0; j<board.length; j++){
