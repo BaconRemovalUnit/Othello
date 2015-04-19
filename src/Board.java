@@ -6,8 +6,9 @@ import java.util.ArrayList;
 */
 
 public class Board {
-	private final int white = -1;
-	private final int black = 1;
+	private final int WHITE = -1;
+	private final int BLACK = 1;
+	private final int BLANK = 0;
 	int[][] board = new int[8][8];
 	int count;
 	
@@ -50,19 +51,87 @@ public class Board {
 	//generate all the posible moves for one player
 	public ArrayList<Board> genChild(int color){
 		ArrayList<Board> moves = new ArrayList<Board>();
-		if(color == white){
+		if(color == WHITE){
 			for(int j = 0; j<board.length; j++){
 				for(int i = 0; i<board[0].length;i++){
-					
+					if(board[i][j]==BLANK){
+						//all eight directions
+						try{
+						if(board[i][j-1]==BLACK){
+							//search up
+							if(digDown(i,(j-1),8));
+						}}
+						catch(NullPointerException e){};
+						
+						try{
+						if(board[i][j+1]==BLACK){
+							//search down
+							if(digDown(i,(j+1),2));
+						}}
+						catch(NullPointerException e){};
+						
+						try{
+						if(board[i-1][j]==BLACK){
+							//search left
+							if(digDown((i-1),j,4));
+						}}
+						catch(NullPointerException e){};
+						
+						try{
+						if(board[i+1][j]==BLACK){
+							//search right
+							if(digDown((i+1),j,6));
+						}}
+						catch(NullPointerException e){};
+						
+						try{
+						if(board[i-1][j-1]==BLACK){
+							//search leftup
+							if(digDown((i-1),(j-1),7));
+						}}
+						catch(NullPointerException e){};
+						
+						try{
+						if(board[i+1][j-1]==BLACK){
+							//search rightup
+							if(digDown((i+1),(j-1),2));
+						}}
+						catch(NullPointerException e){};
+						
+						try{
+						if(board[i-1][j+1]==BLACK){
+							//search leftdown
+							if(digDown((i-1),(j+1),2));
+						}}
+						catch(NullPointerException e){};
+						
+						try{
+						if(board[i+1][j+1]==BLACK){
+							//search rightdonw
+							if(digDown((i+1),(j+1),2));
+						}}
+						catch(NullPointerException e){};	
+						
+					}
 				}
 			}
 		}
+		//for black
 		else{
 			
 		}
+
 		return moves;
 	}
 	
+	/**
+	 * directions based on the num pad
+	 */
+	private boolean digDown(int i, int j, int k) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	//create a new instace of the board
 	public Board copyBoard(Board a){
 		Board b = new Board();
@@ -99,9 +168,9 @@ public class Board {
 	public void print(){
 		for(int j = 0; j<board.length; j++){
 			for(int i = 0; i<board[0].length;i++){
-				if(board[i][j] == black)
+				if(board[i][j] == BLACK)
 					System.out.print("O\t");
-				else if(board[i][j] == white)
+				else if(board[i][j] == WHITE)
 				System.out.print("X\t");
 				else
 				System.out.print("-\t");
