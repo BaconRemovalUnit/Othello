@@ -6,9 +6,10 @@ import java.util.ArrayList;
 */
 
 public class Board {
-	private final int WHITE = -1;
-	private final int BLACK = 1;
+	private final int WHITE = -1;//X
+	private final int BLACK = 1;//O
 	private final int BLANK = 0;
+	
 	int[][] board = new int[8][8];
 	int count;
 	
@@ -22,6 +23,7 @@ public class Board {
 		board[4][4]=-1;
 		board[3][4]=1;
 		board[4][3]=1;
+		
 		count = 0;
 	}
 	
@@ -39,7 +41,7 @@ public class Board {
 	}
 	
 	public boolean canPlace(int x, int y) {
-		try{
+		try{//needs to be modified
 			return (board[x][y]==0);
 		}
 		catch(Exception e){
@@ -111,16 +113,16 @@ public class Board {
 							int[] location = digDown(i,(j-1),3);
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
-						
 					}
 				}
 		}
-
 		return moves;
 	}
 	
 	/**
 	 * directions based on the num pad
+	 * digDown starts with a node of one color, returns
+	 * the location of a node of the different color
 	 */
 	private int[] digDown(int x, int y, int dir) {
 		//getting current color
