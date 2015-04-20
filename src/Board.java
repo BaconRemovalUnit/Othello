@@ -49,76 +49,71 @@ public class Board {
 	}
 	
 	//generate all the posible moves for one player
-	public ArrayList<Board> genChild(int color){
+	public ArrayList<Board> genMovable(int color){
 		ArrayList<Board> moves = new ArrayList<Board>();
-		if(color == WHITE){
+			
 			for(int j = 0; j<board.length; j++){
 				for(int i = 0; i<board[0].length;i++){
-					if(board[i][j]==BLANK){
+					if(board[i][j]==color){
 						//all eight directions
-						try{
-						if(board[i][j-1]==BLACK){
+						if(j>0){
+						if(board[i][j-1]+color==0){
 							//search up
-							if(digDown(i,(j-1),8));
+							int[] location = digDown(i,(j-1),8);
+							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}}
-						catch(NullPointerException e){};
 						
-						try{
-						if(board[i][j+1]==BLACK){
+						if(j<7){
+						if(board[i][j+1]+color==0){
 							//search down
-							if(digDown(i,(j+1),2));
+							int[] location = digDown(i,(j+1),2);
+							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}}
-						catch(NullPointerException e){};
 						
-						try{
-						if(board[i-1][j]==BLACK){
+						if(i>0)
+						if(board[i-1][j]+color==0){
 							//search left
-							if(digDown((i-1),j,4));
-						}}
-						catch(NullPointerException e){};
+							int[] location = digDown(i-1,j,4);
+							System.out.println("x:"+location[0]+"y:"+location[1]);
+						}
 						
-						try{
-						if(board[i+1][j]==BLACK){
+						if(i<7)
+						if(board[i+1][j]+color==0){
 							//search right
-							if(digDown((i+1),j,6));
-						}}
-						catch(NullPointerException e){};
+							int[] location = digDown(i+1,j,6);
+							System.out.println("x:"+location[0]+"y:"+location[1]);
+						}
 						
-						try{
-						if(board[i-1][j-1]==BLACK){
+						if(i>0&&j>0)
+						if(board[i-1][j-1]+color==0){
 							//search leftup
-							if(digDown((i-1),(j-1),7));
-						}}
-						catch(NullPointerException e){};
+							int[] location = digDown(i-1,(j-1),7);
+							System.out.println("x:"+location[0]+"y:"+location[1]);
+						}
 						
-						try{
-						if(board[i+1][j-1]==BLACK){
+						if(i<7&&j>0)
+						if(board[i+1][j-1]+color==0){
 							//search rightup
-							if(digDown((i+1),(j-1),2));
-						}}
-						catch(NullPointerException e){};
+							int[] location = digDown((i+1),(j-1),8);
+							System.out.println("x:"+location[0]+"y:"+location[1]);
+						}
 						
-						try{
-						if(board[i-1][j+1]==BLACK){
+						if(i>0&&j<7)
+						if(board[i-1][j+1]+color==0){
 							//search leftdown
-							if(digDown((i-1),(j+1),2));
-						}}
-						catch(NullPointerException e){};
+							int[] location = digDown(i,(j-1),1);
+							System.out.println("x:"+location[0]+"y:"+location[1]);
+						}
 						
-						try{
-						if(board[i+1][j+1]==BLACK){
+						if(i<7&&j<7)
+						if(board[i+1][j+1]+color==0){
 							//search rightdonw
-							if(digDown((i+1),(j+1),2));
-						}}
-						catch(NullPointerException e){};	
+							int[] location = digDown(i,(j-1),3);
+							System.out.println("x:"+location[0]+"y:"+location[1]);
+						}
 						
 					}
 				}
-			}
-		}
-		//for black
-		else{
-			
 		}
 
 		return moves;
@@ -127,9 +122,94 @@ public class Board {
 	/**
 	 * directions based on the num pad
 	 */
-	private boolean digDown(int i, int j, int k) {
-		// TODO Auto-generated method stub
-		return false;
+	private int[] digDown(int x, int y, int dir) {
+		//getting current color
+		int color = board[x][y];
+		
+		boolean tag = true;
+		if(dir==8){//up
+			while(y!=0||tag){
+				y--;
+				if(board[x][y]==0)
+					return new int[]{x,y};
+				else if(board[x][y]!=color)
+					tag = false;
+			}
+		}
+		else if(dir==2){//down
+			while(y!=7||tag){
+				y++;
+				if(board[x][y]==0)
+					return new int[]{x,y};
+				else if(board[x][y]!=color)
+					tag = false;
+			}
+			
+		}
+		else if(dir==6){//right
+			while(x!=7||tag){
+				x++;
+				if(board[x][y]==0)
+					return new int[]{x,y};
+				else if(board[x][y]!=color)
+					tag = false;
+			}
+		}
+		else if(dir==4){//left
+			while(x!=0||tag){
+				x--;
+				if(board[x][y]==0)
+					return new int[]{x,y};
+				else if(board[x][y]!=color)
+					tag = false;
+			}
+			
+		}
+		else if(dir==9){//rightup
+			while(x!=7||y!=0||tag){
+				x++;
+				y--;
+				if(board[x][y]==0)
+					return new int[]{x,y};
+				else if(board[x][y]!=color)
+					tag = false;
+			}
+		}
+		
+		else if(dir==3){//rightdown
+			while(x!=7||y!=7||tag){
+				x++;
+				y++;
+				if(board[x][y]==0)
+					return new int[]{x,y};
+				else if(board[x][y]!=color)
+					tag = false;
+			}
+		}
+
+		else if(dir==1){//leftdown
+			while(x!=0||y!=7||tag){
+				x--;
+				y++;
+				if(board[x][y]==0)
+					return new int[]{x,y};
+				else if(board[x][y]!=color)
+					tag = false;
+			}
+		}
+
+		else if(dir==7){//leftup
+			while(x!=0||y!=0||tag){
+				x--;
+				y--;
+				if(board[x][y]==0)
+					return new int[]{x,y};
+				else if(board[x][y]!=color)
+					tag = false;
+			}
+		}
+		
+		return new int[]{-1,-1};
 	}
 
 	//create a new instace of the board
