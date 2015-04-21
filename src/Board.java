@@ -42,7 +42,7 @@ public class Board {
 		currentPlayer = currentPlayer * -1;//flip side
 		}
 		else{
-			System.err.println("NOT VALID SPOT");
+			System.err.println("NOT A VALID MOVE");
 		}
 	}
 
@@ -363,6 +363,7 @@ public class Board {
 	
 
 	public void print(){//can be extended to paint
+		System.out.println("---------------------------------------------------------");
 		for(int j = 0; j<board.length; j++){
 			for(int i = 0; i<board[0].length;i++){
 				if(board[i][j] == BLACK)
