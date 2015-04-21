@@ -7,6 +7,13 @@ import java.util.Iterator;
 *int[][] indicates x,y coordinates
 */
 
+
+/*
+ * TODO:
+ * 1.isFull
+ * 2.genChild
+ * 3.
+ */
 public class Board {
 	private final int WHITE = -1;//O white
 	private final int BLACK = 1;//X black
@@ -53,6 +60,8 @@ public class Board {
 			Iterator<Point> iter = list.iterator();
 			while(iter.hasNext()){
 				Point current = iter.next();
+				System.out.println("X: "+current.x+", Y: "+current.y);
+				
 				if(current.x==x&&current.y==y)
 					return true;
 			}
@@ -244,90 +253,147 @@ public class Board {
 		
 		board[x][y]=color;
 		
+		//up
+		boolean tag = false;
 		int cy = y;
 		int cx = x;
-		while(cy!=0){//up
+		
+		while(cy!=0){
 			cy--;
-			if(board[cx][cy]==0||board[cx][cy]==color)
+			if(board[cx][cy]==0)
 				break;
-			else
-				board[cx][cy]=color;
+			else if(board[cx][cy]==color)
+			{
+				
+				tag = true;
+				break;
+			}
 		}
-		
-		cy = y;
-		cx = x;
-		while(cy!=7){//down
+		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cy++;
-			if(board[cx][cy]==0||board[cx][cy]==color)
-				break;
-			else
-				board[cx][cy]=color;
+			board[cx][cy] = color;
 		}
 		
+		//down
+		tag = false;
 		cy = y;
 		cx = x;
-		while(cx!=0){//left
+		
+		while(cy!=7){
+			cy++;
+			
+			if(board[cx][cy]==0)
+				break;
+			else if(board[cx][cy]==color)
+				tag = true;
+			
+		}
+		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
+			cy--;
+			board[cx][cy] = color;
+		}
+		
+		
+		//left
+		tag = false;
+		cy = y;
+		cx = x;
+		while(cy!=7){
 			cx--;
-			if(board[cx][cy]==0||board[cx][cy]==color)
+			if(board[cx][cy]==0)
 				break;
-			else
-				board[cx][cy]=color;
+			else if(board[cx][cy]==color)
+				tag = true;
 		}
-		
-		cy = y;
-		cx = x;
-		while(cx!=0){//right
+		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cx++;
-			if(board[cx][cy]==0||board[cx][cy]==color)
-				break;
-			else
-				board[cx][cy]=color;
+			board[cx][cy] = color;
 		}
 		
+		//right
+		tag = false;
 		cy = y;
 		cx = x;
-		while(cx!=0&&cy!=0){//leftup
+		while(cy!=7){
+			cx++;
+			if(board[cx][cy]==0)
+				break;
+			else if(board[cx][cy]==color)
+				tag = true;
+		}
+		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
+			cx--;
+			board[cx][cy] = color;
+		}
+		
+		//leftup
+		tag = false;
+		cy = y;
+		cx = x;
+		while(cy!=7){
 			cx--;
 			cy--;
-			if(board[cx][cy]==0||board[cx][cy]==color)
+			if(board[cx][cy]==0)
 				break;
-			else
-				board[cx][cy]=color;
+			else if(board[cx][cy]==color)
+				tag = true;
 		}
-		
-		cy = y;
-		cx = x;
-		while(cx!=0&&cy!=7){//leftdown
-			cx--;
+		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
+			cx++;
 			cy++;
-			if(board[cx][cy]==0||board[cx][cy]==color)
-				break;
-			else
-				board[cx][cy]=color;
+			board[cx][cy] = color;
 		}
 		
+		tag = false;
 		cy = y;
 		cx = x;
-		while(cx!=7&&cy!=0){//rightup
+		while(cy!=7){//rightup
 			cx++;
 			cy--;
-			if(board[cx][cy]==0||board[cx][cy]==color)
+			if(board[cx][cy]==0)
 				break;
-			else
-				board[cx][cy]=color;
+			else if(board[cx][cy]==color)
+				tag = true;
+		}
+		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
+			cx--;
+			cy++;
+			board[cx][cy] = color;
 		}
 		
+		tag = false;
 		cy = y;
 		cx = x;
-		while(cx!=7&&cy!=7){//rightdown
-			cx++;
+		while(cy!=7){//leftdown
+			cx--;
 			cy++;
-			if(board[cx][cy]==0||board[cx][cy]==color)
+			if(board[cx][cy]==0)
 				break;
-			else
-				board[cx][cy]=color;
+			else if(board[cx][cy]==color)
+				tag = true;
+		}
+		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
+			cx++;
+			cy--;
+			board[cx][cy] = color;
 		}
 		
+		tag = false;
+		cy = y;
+		cx = x;
+		while(cy!=7){//rightdown
+			cx++;
+			cy++;
+			if(board[cx][cy]==0)
+				break;
+			else if(board[cx][cy]==color)
+				tag = true;
+		}
+		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
+			cx--;
+			cy--;
+			board[cx][cy] = color;
+		}
 	}
 
 	//create a new instace of the board
