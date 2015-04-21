@@ -1,4 +1,6 @@
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /*
 *1/true is black, -1/false is white
@@ -6,9 +8,10 @@ import java.util.ArrayList;
 */
 
 public class Board {
-	private final int WHITE = -1;//X
-	private final int BLACK = 1;//O
+	private final int WHITE = -1;//O white
+	private final int BLACK = 1;//X black
 	private final int BLANK = 0;
+	private int currentPlayer = 1;//black first
 	
 	int[][] board = new int[8][8];
 	int count;
@@ -23,26 +26,37 @@ public class Board {
 		board[4][4]=-1;
 		board[3][4]=1;
 		board[4][3]=1;
-		
 		count = 0;
 	}
 	
-	public void place(int x, int y, boolean side){
-		if(canPlace(x,y))
+	public void place(int x, int y){
+		if(canPlace(x,y,currentPlayer)){
 		try{
-			if(side)
-			board[x][y] = 1;
-			else
-			board[x][y] = -1;
+			flip(x,y,currentPlayer);	
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
+		
+		updateScore();
+		currentPlayer = currentPlayer * -1;//flip side
+		}
+		else{
+			System.err.println("NOT VALID SPOT");
+		}
 	}
-	
-	public boolean canPlace(int x, int y) {
-		try{//needs to be modified
-			return (board[x][y]==0);
+
+
+	public boolean canPlace(int x, int y, int currentPlayer) {
+		try{
+			ArrayList<Point> list = genMovable(currentPlayer);
+			Iterator<Point> iter = list.iterator();
+			while(iter.hasNext()){
+				Point current = iter.next();
+				if(current.x==x&&current.y==y)
+					return true;
+			}
+			return false;
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -51,8 +65,8 @@ public class Board {
 	}
 	
 	//generate all the posible moves for one player
-	public ArrayList<Board> genMovable(int color){
-		ArrayList<Board> moves = new ArrayList<Board>();
+	public ArrayList<Point> genMovable(int color){
+		ArrayList<Point> moves = new ArrayList<Point>();
 			
 			for(int j = 0; j<board.length; j++){
 				for(int i = 0; i<board[0].length;i++){
@@ -62,6 +76,7 @@ public class Board {
 						if(board[i][j-1]+color==0){
 							//search up
 							int[] location = digDown(i,(j-1),8);
+							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}}
 						
@@ -69,6 +84,7 @@ public class Board {
 						if(board[i][j+1]+color==0){
 							//search down
 							int[] location = digDown(i,(j+1),2);
+							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}}
 						
@@ -76,6 +92,7 @@ public class Board {
 						if(board[i-1][j]+color==0){
 							//search left
 							int[] location = digDown(i-1,j,4);
+							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
 						
@@ -83,6 +100,7 @@ public class Board {
 						if(board[i+1][j]+color==0){
 							//search right
 							int[] location = digDown(i+1,j,6);
+							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
 						
@@ -90,6 +108,7 @@ public class Board {
 						if(board[i-1][j-1]+color==0){
 							//search leftup
 							int[] location = digDown(i-1,(j-1),7);
+							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
 						
@@ -97,6 +116,7 @@ public class Board {
 						if(board[i+1][j-1]+color==0){
 							//search rightup
 							int[] location = digDown((i+1),(j-1),8);
+							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
 						
@@ -104,6 +124,7 @@ public class Board {
 						if(board[i-1][j+1]+color==0){
 							//search leftdown
 							int[] location = digDown(i,(j-1),1);
+							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
 						
@@ -111,6 +132,7 @@ public class Board {
 						if(board[i+1][j+1]+color==0){
 							//search rightdonw
 							int[] location = digDown(i,(j-1),3);
+							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
 					}
@@ -120,6 +142,7 @@ public class Board {
 	}
 	
 	/**
+	 * Finding a valid place
 	 * directions based on the num pad
 	 * digDown starts with a node of one color, returns
 	 * the location of a node of the different color
@@ -213,6 +236,99 @@ public class Board {
 		
 		return new int[]{-1,-1};
 	}
+	
+	/*
+	 * actually placing the piece
+	 */
+	private void flip(int x, int y, int color) {
+		
+		board[x][y]=color;
+		
+		int cy = y;
+		int cx = x;
+		while(cy!=0){//up
+			cy--;
+			if(board[cx][cy]==0||board[cx][cy]==color)
+				break;
+			else
+				board[cx][cy]=color;
+		}
+		
+		cy = y;
+		cx = x;
+		while(cy!=7){//down
+			cy++;
+			if(board[cx][cy]==0||board[cx][cy]==color)
+				break;
+			else
+				board[cx][cy]=color;
+		}
+		
+		cy = y;
+		cx = x;
+		while(cx!=0){//left
+			cx--;
+			if(board[cx][cy]==0||board[cx][cy]==color)
+				break;
+			else
+				board[cx][cy]=color;
+		}
+		
+		cy = y;
+		cx = x;
+		while(cx!=0){//right
+			cx++;
+			if(board[cx][cy]==0||board[cx][cy]==color)
+				break;
+			else
+				board[cx][cy]=color;
+		}
+		
+		cy = y;
+		cx = x;
+		while(cx!=0&&cy!=0){//leftup
+			cx--;
+			cy--;
+			if(board[cx][cy]==0||board[cx][cy]==color)
+				break;
+			else
+				board[cx][cy]=color;
+		}
+		
+		cy = y;
+		cx = x;
+		while(cx!=0&&cy!=7){//leftdown
+			cx--;
+			cy++;
+			if(board[cx][cy]==0||board[cx][cy]==color)
+				break;
+			else
+				board[cx][cy]=color;
+		}
+		
+		cy = y;
+		cx = x;
+		while(cx!=7&&cy!=0){//rightup
+			cx++;
+			cy--;
+			if(board[cx][cy]==0||board[cx][cy]==color)
+				break;
+			else
+				board[cx][cy]=color;
+		}
+		
+		cy = y;
+		cx = x;
+		while(cx!=7&&cy!=7){//rightdown
+			cx++;
+			cy++;
+			if(board[cx][cy]==0||board[cx][cy]==color)
+				break;
+			else
+				board[cx][cy]=color;
+		}
+		
+	}
 
 	//create a new instace of the board
 	public Board copyBoard(Board a){
@@ -235,25 +351,24 @@ public class Board {
 		return true;
 	}
 	
-	public void updateScore(){
+	public void updateScore(){//calculate the total score of the board after each round
 		count = 0;
 		for(int j = 0; j<board.length; j++){
 			for(int i = 0; i<board[0].length;i++){
 			count += count + board[i][j];
 			}
 		}
-		this.count  = count;
 	}
 	
 	
 
-	public void print(){
+	public void print(){//can be extended to paint
 		for(int j = 0; j<board.length; j++){
 			for(int i = 0; i<board[0].length;i++){
 				if(board[i][j] == BLACK)
-					System.out.print("O\t");
+					System.out.print("X\t");
 				else if(board[i][j] == WHITE)
-				System.out.print("X\t");
+				System.out.print("O\t");
 				else
 				System.out.print("-\t");
 			}

@@ -4,5 +4,7 @@ public class Main {
 		Board a = new Board();
 		a.print();
 		a.genMovable(1);
-	}	
+		a.place(4, 5);
+		a.print();
+	}
 }
