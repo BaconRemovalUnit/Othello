@@ -27,6 +27,7 @@ public class Board extends JPanel{
 	private final int BLACK = 1;//X black
 	private final int BLANK = 0;
 	private int currentPlayer = 1;//black first
+	private boolean gg = false;
 	
 	int[][] board = new int[8][8];
 	int count;
@@ -51,6 +52,7 @@ public class Board extends JPanel{
 	}
 	
 	public void place(int x, int y){
+		if(!gg)
 		if(!isFull())
 		{
 		if(canPlace(x,y,currentPlayer)){
@@ -75,6 +77,7 @@ public class Board extends JPanel{
 			String winner = (blackscore>whitescore)?"BLACK":"WHITE";
 			JOptionPane.showMessageDialog(null, winner+" won!", "Congratulations!",JOptionPane.PLAIN_MESSAGE); 
 			}
+			gg = true;
 		}
 			
 	}
@@ -113,7 +116,7 @@ public class Board extends JPanel{
 	//generate all the posible moves for one player
 	public ArrayList<Point> genMovable(int color){
 		ArrayList<Point> moves = new ArrayList<Point>();
-			
+			boolean[][] loc = new boolean[8][8];
 			for(int j = 0; j<board.length; j++){
 				for(int i = 0; i<board[0].length;i++){
 					if(board[i][j]==color){
@@ -123,52 +126,60 @@ public class Board extends JPanel{
 							//search up
 							int[] location = digDown(i,(j-1),8);
 							if(inGrid(location))
-							moves.add(new Point(location[0],location[1]));}
+								loc[location[0]][location[1]]=true;}
 						if(j<7)
 						if(board[i][j+1]+color==0){
 							//search down
 							int[] location = digDown(i,(j+1),2);
 							if(inGrid(location))
-							moves.add(new Point(location[0],location[1]));}
+								loc[location[0]][location[1]]=true;}
 						if(i>0)
 						if(board[i-1][j]+color==0){
 							//search left
 							int[] location = digDown((i-1),j,4);
 							if(inGrid(location))
-							moves.add(new Point(location[0],location[1]));}
+								loc[location[0]][location[1]]=true;}
 						if(i<7)
 						if(board[i+1][j]+color==0){
 							//search right
 							int[] location = digDown((i+1),j,6);
 							if(inGrid(location))
-							moves.add(new Point(location[0],location[1]));}
+								loc[location[0]][location[1]]=true;}
 						if(i>0&&j>0)
 						if(board[i-1][j-1]+color==0){
 							//search leftup
 							int[] location = digDown(i-1,(j-1),7);
 							if(inGrid(location))
-							moves.add(new Point(location[0],location[1]));}
+								loc[location[0]][location[1]]=true;}
 						if(i<7&&j>0)
 						if(board[i+1][j-1]+color==0){
 							//search rightup
 							int[] location = digDown((i+1),(j-1),9);
 							if(inGrid(location))
-							moves.add(new Point(location[0],location[1]));}
+								loc[location[0]][location[1]]=true;}
 						if(i>0&&j<7)
 						if(board[i-1][j+1]+color==0){
 							//search leftdown
 							int[] location = digDown((i-1),(j+1),1);
 							if(inGrid(location))
-							moves.add(new Point(location[0],location[1]));}
+								loc[location[0]][location[1]]=true;}
 						if(i<7&&j<7)
 						if(board[i+1][j+1]+color==0){
 							//search rightdonw
 							int[] location = digDown((i+1),(j+1),3);
 							if(inGrid(location))
-							moves.add(new Point(location[0],location[1]));}
+								loc[location[0]][location[1]]=true;}
 					}
 				}
 		}
+			
+		for(int i = 0; i< 8; i++){
+			for(int j = 0; j<8; j++){
+				if(loc[i][j])
+					moves.add(new Point(i,j));
+			}
+		}
+		
 		System.out.println(moves.size());
 		return moves;
 	}
@@ -435,10 +446,14 @@ public class Board extends JPanel{
 	}
 
 	//create a new instace of the board
-	public Board copyBoard(Board a){
+	public Board copyBoard(){
 		Board b = new Board();
-		for(int i = 0; i<a.board.length; i++){
-			for(int j = 0; j<a.board[0].length;j++){
+		b.currentPlayer = this.currentPlayer;
+		b.blackscore = this.blackscore;
+		b.whitescore = this.whitescore;
+		b.count = this.count;
+		for(int i = 0; i<8; i++){
+			for(int j = 0; j<8;j++){
 				b.board[i][j] = 0;
 			}
 		}
@@ -490,11 +505,11 @@ public class Board extends JPanel{
 			for(int j = 0;j<8;j++)
 			{
 				if((i+j)%2==0){
-					g.setColor(new Color(0,100,0));
+					g.setColor(new Color(0,70,0));
 					g.fillRect(i*50+50, j*50+50, 50, 50);
 				}
 				else{
-					g.setColor(new Color(0,70,0));
+					g.setColor(new Color(0,100,0));
 					g.fillRect(i*50+50, j*50+50, 50, 50);
 					}
 			}
