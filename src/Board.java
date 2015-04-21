@@ -1,6 +1,14 @@
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.swing.JPanel;
 
 /*
 *1/true is black, -1/false is white
@@ -14,7 +22,7 @@ import java.util.Iterator;
  * 2.genChild
  * 3.
  */
-public class Board {
+public class Board extends JPanel{
 	private final int WHITE = -1;//O white
 	private final int BLACK = 1;//X black
 	private final int BLANK = 0;
@@ -24,6 +32,10 @@ public class Board {
 	int count;
 	
 	public Board(){
+		LocationListener listen = new LocationListener();
+		addMouseListener(listen);
+		addMouseMotionListener(listen);
+		
 		for(int i = 0; i<board.length; i++){
 			for(int j = 0; j<board[0].length;j++){
 				board[i][j] = 0;
@@ -37,6 +49,7 @@ public class Board {
 	}
 	
 	public void place(int x, int y){
+		if(!isFull())
 		if(canPlace(x,y,currentPlayer)){
 		try{
 			flip(x,y,currentPlayer);	
@@ -53,6 +66,15 @@ public class Board {
 		}
 	}
 
+	public boolean isFull() {
+		for(int i=0; i <8 ; i++){
+			for(int j=0; j <8 ; j++){
+				if(board[i][j]==0)
+					return false;
+			}
+		}
+		return true;
+	}
 
 	public boolean canPlace(int x, int y, int currentPlayer) {
 		try{
@@ -81,69 +103,46 @@ public class Board {
 				for(int i = 0; i<board[0].length;i++){
 					if(board[i][j]==color){
 						//all eight directions
-						if(j>0){
+						if(j>0)
 						if(board[i][j-1]+color==0){
 							//search up
 							int[] location = digDown(i,(j-1),8);
-							moves.add(new Point(location[0],location[1]));
-							System.out.println("x:"+location[0]+"y:"+location[1]);
-						}}
-						
-						if(j<7){
+							moves.add(new Point(location[0],location[1]));}
+						if(j<7)
 						if(board[i][j+1]+color==0){
 							//search down
 							int[] location = digDown(i,(j+1),2);
-							moves.add(new Point(location[0],location[1]));
-							System.out.println("x:"+location[0]+"y:"+location[1]);
-						}}
-						
+							moves.add(new Point(location[0],location[1]));}
 						if(i>0)
 						if(board[i-1][j]+color==0){
 							//search left
 							int[] location = digDown(i-1,j,4);
-							moves.add(new Point(location[0],location[1]));
-							System.out.println("x:"+location[0]+"y:"+location[1]);
-						}
-						
+							moves.add(new Point(location[0],location[1]));}
 						if(i<7)
 						if(board[i+1][j]+color==0){
 							//search right
 							int[] location = digDown(i+1,j,6);
-							moves.add(new Point(location[0],location[1]));
-							System.out.println("x:"+location[0]+"y:"+location[1]);
-						}
-						
+							moves.add(new Point(location[0],location[1]));}
 						if(i>0&&j>0)
 						if(board[i-1][j-1]+color==0){
 							//search leftup
 							int[] location = digDown(i-1,(j-1),7);
-							moves.add(new Point(location[0],location[1]));
-							System.out.println("x:"+location[0]+"y:"+location[1]);
-						}
-						
+							moves.add(new Point(location[0],location[1]));}
 						if(i<7&&j>0)
 						if(board[i+1][j-1]+color==0){
 							//search rightup
 							int[] location = digDown((i+1),(j-1),8);
-							moves.add(new Point(location[0],location[1]));
-							System.out.println("x:"+location[0]+"y:"+location[1]);
-						}
-						
+							moves.add(new Point(location[0],location[1]));}
 						if(i>0&&j<7)
 						if(board[i-1][j+1]+color==0){
 							//search leftdown
 							int[] location = digDown(i-1,(j+1),1);
-							moves.add(new Point(location[0],location[1]));
-							System.out.println("x:"+location[0]+"y:"+location[1]);
-						}
-						
+							moves.add(new Point(location[0],location[1]));}
 						if(i<7&&j<7)
 						if(board[i+1][j+1]+color==0){
 							//search rightdonw
 							int[] location = digDown(i+1,(j+1),3);
-							moves.add(new Point(location[0],location[1]));
-							System.out.println("x:"+location[0]+"y:"+location[1]);
-						}
+							moves.add(new Point(location[0],location[1]));}
 					}
 				}
 		}
@@ -162,7 +161,7 @@ public class Board {
 		
 		boolean tag = true;
 		if(dir==8){//up
-			while(y!=0||tag){
+			while(y!=0&&tag){
 				y--;
 				if(board[x][y]==0)
 					return new int[]{x,y};
@@ -171,7 +170,7 @@ public class Board {
 			}
 		}
 		else if(dir==2){//down
-			while(y!=7||tag){
+			while(y!=7&&tag){
 				y++;
 				if(board[x][y]==0)
 					return new int[]{x,y};
@@ -181,7 +180,7 @@ public class Board {
 			
 		}
 		else if(dir==6){//right
-			while(x!=7||tag){
+			while(x!=7&&tag){
 				x++;
 				if(board[x][y]==0)
 					return new int[]{x,y};
@@ -190,7 +189,7 @@ public class Board {
 			}
 		}
 		else if(dir==4){//left
-			while(x!=0||tag){
+			while(x!=0&&tag){
 				x--;
 				if(board[x][y]==0)
 					return new int[]{x,y};
@@ -200,7 +199,7 @@ public class Board {
 			
 		}
 		else if(dir==9){//rightup
-			while(x!=7||y!=0||tag){
+			while(x!=7&&y!=0&&tag){
 				x++;
 				y--;
 				if(board[x][y]==0)
@@ -211,7 +210,7 @@ public class Board {
 		}
 		
 		else if(dir==3){//rightdown
-			while(x!=7||y!=7||tag){
+			while(x!=7&&y!=7&&tag){
 				x++;
 				y++;
 				if(board[x][y]==0)
@@ -222,7 +221,7 @@ public class Board {
 		}
 
 		else if(dir==1){//leftdown
-			while(x!=0||y!=7||tag){
+			while(x!=0&&y!=7&&tag){
 				x--;
 				y++;
 				if(board[x][y]==0)
@@ -233,7 +232,7 @@ public class Board {
 		}
 
 		else if(dir==7){//leftup
-			while(x!=0||y!=0||tag){
+			while(x!=0&&y!=0&&tag){
 				x--;
 				y--;
 				if(board[x][y]==0)
@@ -314,7 +313,7 @@ public class Board {
 		tag = false;
 		cy = y;
 		cx = x;
-		while(cy!=7){
+		while(cx<7){
 			cx++;
 			if(board[cx][cy]==0)
 				break;
@@ -347,7 +346,7 @@ public class Board {
 		tag = false;
 		cy = y;
 		cx = x;
-		while(cy!=7){//rightup
+		while(cy>0&&cx<7){//rightup
 			cx++;
 			cy--;
 			if(board[cx][cy]==0)
@@ -381,7 +380,7 @@ public class Board {
 		tag = false;
 		cy = y;
 		cx = x;
-		while(cy!=7){//rightdown
+		while(cy!=7&&cx!=7){//rightdown
 			cx++;
 			cy++;
 			if(board[cx][cy]==0)
@@ -426,7 +425,42 @@ public class Board {
 		}
 	}
 	
-	
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		
+		g.setColor(new Color(210,105,30));
+		g.fillRect(0, 0, 600, 600);
+		g.setColor(Color.black);
+		g.setFont(new Font(Font.MONOSPACED,10,10));
+		
+		String player = (currentPlayer==1?"BLACK":"WHITE");
+		g.drawString("CurrentPlayer: "+player, 400, 300);
+		for(int i = 0;i<8;i++)
+			for(int j = 0;j<8;j++)
+			{
+				if((i+j)%2==0){
+					g.setColor(new Color(0,100,0));
+					g.fillRect(i*50+50, j*50+50, 50, 50);
+				}
+				else{
+					g.setColor(new Color(0,70,0));
+					g.fillRect(i*50+50, j*50+50, 50, 50);
+					}
+			}
+		
+		for(int j = 0; j<board.length; j++){
+			for(int i = 0; i<board[0].length;i++){
+				if(board[i][j] == BLACK){
+					g.setColor(Color.BLACK);
+					g.fillOval(i*50+50, j*50+50, 50, 50);
+				}
+				else if(board[i][j] == WHITE){
+					g.setColor(Color.WHITE);
+					g.fillOval(i*50+50, j*50+50, 50, 50);
+				}
+			}
+		}
+	}
 
 	public void print(){//can be extended to paint
 		System.out.println("---------------------------------------------------------");
@@ -442,4 +476,28 @@ public class Board {
 			System.out.println();
 		}
 	}
+	
+	private class LocationListener implements MouseListener,MouseMotionListener {
+
+		public void mouseDragged(MouseEvent arg0) {}
+		public void mouseMoved(MouseEvent arg0) {}
+		public void mouseClicked(MouseEvent e) {
+			int x = e.getX();
+			int y = e.getY();
+			int a = (x-50)/50;
+			int b = ((y-50)/50);
+			if(a>-1&&a<8&&b>-1&&b<8)
+			place(a,b);
+			System.out.println("X: "+((x-50)/50)+"  Y: "+((y-50)/50));
+			repaint();
+			
+		}
+
+		public void mouseEntered(MouseEvent arg0) {}
+		public void mouseExited(MouseEvent arg0) {}
+		public void mousePressed(MouseEvent arg0) {}
+		public void mouseReleased(MouseEvent arg0) {}
+	}
 }
+
+
