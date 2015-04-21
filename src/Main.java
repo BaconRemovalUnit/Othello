@@ -5,7 +5,11 @@ public class Main {
 		a.print();
 		a.place(5, 4);
 		a.print();
-		a.place(6, 5);
+		a.place(5, 5);
+		a.print();
+		a.place(4, 5);
+		a.print();
+		
 
 	}
 }

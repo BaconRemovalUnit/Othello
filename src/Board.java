@@ -56,12 +56,12 @@ public class Board {
 
 	public boolean canPlace(int x, int y, int currentPlayer) {
 		try{
+			if(board[x][y]!=0)
+				return false;
 			ArrayList<Point> list = genMovable(currentPlayer);
 			Iterator<Point> iter = list.iterator();
 			while(iter.hasNext()){
 				Point current = iter.next();
-				System.out.println("X: "+current.x+", Y: "+current.y);
-				
 				if(current.x==x&&current.y==y)
 					return true;
 			}
@@ -132,7 +132,7 @@ public class Board {
 						if(i>0&&j<7)
 						if(board[i-1][j+1]+color==0){
 							//search leftdown
-							int[] location = digDown(i,(j-1),1);
+							int[] location = digDown(i-1,(j+1),1);
 							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
@@ -140,7 +140,7 @@ public class Board {
 						if(i<7&&j<7)
 						if(board[i+1][j+1]+color==0){
 							//search rightdonw
-							int[] location = digDown(i,(j-1),3);
+							int[] location = digDown(i+1,(j+1),3);
 							moves.add(new Point(location[0],location[1]));
 							System.out.println("x:"+location[0]+"y:"+location[1]);
 						}
