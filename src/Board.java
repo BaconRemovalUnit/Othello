@@ -257,7 +257,7 @@ public class Board extends JPanel{
 		int cy = y;
 		int cx = x;
 		
-		while(cy!=0){
+		while(cy>0){
 			cy--;
 			if(board[cx][cy]==0)
 				break;
@@ -270,6 +270,8 @@ public class Board extends JPanel{
 		}
 		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cy++;
+			if(board[cx][cy] == color)
+				break;
 			board[cx][cy] = color;
 		}
 		
@@ -278,13 +280,14 @@ public class Board extends JPanel{
 		cy = y;
 		cx = x;
 		
-		while(cy!=7){
+		while(cy<7){
 			cy++;
 			
 			if(board[cx][cy]==0)
 				break;
-			else if(board[cx][cy]==color)
+			else if(board[cx][cy]==color){
 				tag = true;
+				break;}
 			
 		}
 		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
@@ -297,12 +300,13 @@ public class Board extends JPanel{
 		tag = false;
 		cy = y;
 		cx = x;
-		while(cy!=7){
+		while(cx>0){
 			cx--;
 			if(board[cx][cy]==0)
 				break;
-			else if(board[cx][cy]==color)
+			else if(board[cx][cy]==color){
 				tag = true;
+				break;}
 		}
 		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cx++;
@@ -317,8 +321,9 @@ public class Board extends JPanel{
 			cx++;
 			if(board[cx][cy]==0)
 				break;
-			else if(board[cx][cy]==color)
+			else if(board[cx][cy]==color){
 				tag = true;
+				break;}
 		}
 		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cx--;
@@ -329,13 +334,14 @@ public class Board extends JPanel{
 		tag = false;
 		cy = y;
 		cx = x;
-		while(cy!=7){
+		while(cy>0&&cx>0){
 			cx--;
 			cy--;
 			if(board[cx][cy]==0)
 				break;
-			else if(board[cx][cy]==color)
+			else if(board[cx][cy]==color){
 				tag = true;
+				break;}
 		}
 		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cx++;
@@ -351,8 +357,9 @@ public class Board extends JPanel{
 			cy--;
 			if(board[cx][cy]==0)
 				break;
-			else if(board[cx][cy]==color)
+			else if(board[cx][cy]==color){
 				tag = true;
+				break;}
 		}
 		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cx--;
@@ -363,13 +370,14 @@ public class Board extends JPanel{
 		tag = false;
 		cy = y;
 		cx = x;
-		while(cy!=7){//leftdown
+		while(cy<7&&cx>0){//leftdown
 			cx--;
 			cy++;
 			if(board[cx][cy]==0)
 				break;
-			else if(board[cx][cy]==color)
+			else if(board[cx][cy]==color){
 				tag = true;
+				break;}
 		}
 		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cx++;
@@ -380,13 +388,14 @@ public class Board extends JPanel{
 		tag = false;
 		cy = y;
 		cx = x;
-		while(cy!=7&&cx!=7){//rightdown
+		while(cy<7&&cx<7){//rightdown
 			cx++;
 			cy++;
 			if(board[cx][cy]==0)
 				break;
-			else if(board[cx][cy]==color)
+			else if(board[cx][cy]==color){
 				tag = true;
+				break;}
 		}
 		while((cx!=x||cy!=y)&&tag==true){//trace back and replace
 			cx--;
@@ -431,10 +440,10 @@ public class Board extends JPanel{
 		g.setColor(new Color(210,105,30));
 		g.fillRect(0, 0, 600, 600);
 		g.setColor(Color.black);
-		g.setFont(new Font(Font.MONOSPACED,10,10));
+		g.setFont(new Font(Font.MONOSPACED,1,20));
 		
 		String player = (currentPlayer==1?"BLACK":"WHITE");
-		g.drawString("CurrentPlayer: "+player, 400, 300);
+		g.drawString("CurrentPlayer: "+player, 150, 500);
 		for(int i = 0;i<8;i++)
 			for(int j = 0;j<8;j++)
 			{
@@ -459,6 +468,15 @@ public class Board extends JPanel{
 					g.fillOval(i*50+50, j*50+50, 50, 50);
 				}
 			}
+		}
+		
+		ArrayList<Point> list = genMovable(currentPlayer);
+		Iterator<Point> iter = list.iterator();
+		while(iter.hasNext()){
+			Point temp = iter.next();
+			g.setColor(Color.GRAY);
+			g.drawOval(temp.x*50+50, temp.y*50+50, 50, 50);
+				
 		}
 	}
 
