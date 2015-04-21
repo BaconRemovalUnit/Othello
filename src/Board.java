@@ -8,6 +8,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /*
@@ -30,6 +31,8 @@ public class Board extends JPanel{
 	
 	int[][] board = new int[8][8];
 	int count;
+	int whitescore = 2;
+	int blackscore = 2;
 	
 	public Board(){
 		LocationListener listen = new LocationListener();
@@ -50,6 +53,7 @@ public class Board extends JPanel{
 	
 	public void place(int x, int y){
 		if(!isFull())
+		{
 		if(canPlace(x,y,currentPlayer)){
 		try{
 			flip(x,y,currentPlayer);	
@@ -64,6 +68,16 @@ public class Board extends JPanel{
 		else{
 			System.err.println("NOT A VALID MOVE");
 		}
+		}
+		else{//game finished
+			if(blackscore==whitescore)
+			JOptionPane.showMessageDialog(null, "OMG It's a Tie!", "Wow",JOptionPane.PLAIN_MESSAGE); 
+			else{
+			String winner = (blackscore>whitescore)?"BLACK":"WHITE";
+			JOptionPane.showMessageDialog(null, winner+" won!", "Congratulations!",JOptionPane.PLAIN_MESSAGE); 
+			}
+		}
+			
 	}
 
 	public boolean isFull() {
@@ -81,6 +95,8 @@ public class Board extends JPanel{
 			if(board[x][y]!=0)
 				return false;
 			ArrayList<Point> list = genMovable(currentPlayer);
+			if(list.size()==0)
+				this.currentPlayer = this.currentPlayer*-1;
 			Iterator<Point> iter = list.iterator();
 			while(iter.hasNext()){
 				Point current = iter.next();
@@ -107,48 +123,61 @@ public class Board extends JPanel{
 						if(board[i][j-1]+color==0){
 							//search up
 							int[] location = digDown(i,(j-1),8);
+							if(inGrid(location))
 							moves.add(new Point(location[0],location[1]));}
 						if(j<7)
 						if(board[i][j+1]+color==0){
 							//search down
 							int[] location = digDown(i,(j+1),2);
+							if(inGrid(location))
 							moves.add(new Point(location[0],location[1]));}
 						if(i>0)
 						if(board[i-1][j]+color==0){
 							//search left
-							int[] location = digDown(i-1,j,4);
+							int[] location = digDown((i-1),j,4);
+							if(inGrid(location))
 							moves.add(new Point(location[0],location[1]));}
 						if(i<7)
 						if(board[i+1][j]+color==0){
 							//search right
-							int[] location = digDown(i+1,j,6);
+							int[] location = digDown((i+1),j,6);
+							if(inGrid(location))
 							moves.add(new Point(location[0],location[1]));}
 						if(i>0&&j>0)
 						if(board[i-1][j-1]+color==0){
 							//search leftup
 							int[] location = digDown(i-1,(j-1),7);
+							if(inGrid(location))
 							moves.add(new Point(location[0],location[1]));}
 						if(i<7&&j>0)
 						if(board[i+1][j-1]+color==0){
 							//search rightup
-							int[] location = digDown((i+1),(j-1),8);
+							int[] location = digDown((i+1),(j-1),9);
+							if(inGrid(location))
 							moves.add(new Point(location[0],location[1]));}
 						if(i>0&&j<7)
 						if(board[i-1][j+1]+color==0){
 							//search leftdown
-							int[] location = digDown(i-1,(j+1),1);
+							int[] location = digDown((i-1),(j+1),1);
+							if(inGrid(location))
 							moves.add(new Point(location[0],location[1]));}
 						if(i<7&&j<7)
 						if(board[i+1][j+1]+color==0){
 							//search rightdonw
-							int[] location = digDown(i+1,(j+1),3);
+							int[] location = digDown((i+1),(j+1),3);
+							if(inGrid(location))
 							moves.add(new Point(location[0],location[1]));}
 					}
 				}
 		}
+		System.out.println(moves.size());
 		return moves;
 	}
 	
+	private boolean inGrid(int[] arr) {		
+		return arr[0]>-1&&arr[0]<8&&arr[1]>-1&&arr[1]<8;
+	}
+
 	/**
 	 * Finding a valid place
 	 * directions based on the num pad
@@ -158,10 +187,11 @@ public class Board extends JPanel{
 	private int[] digDown(int x, int y, int dir) {
 		//getting current color
 		int color = board[x][y];
-		
+
 		boolean tag = true;
+		
 		if(dir==8){//up
-			while(y!=0&&tag){
+			while(y>0&&tag){
 				y--;
 				if(board[x][y]==0)
 					return new int[]{x,y};
@@ -170,7 +200,7 @@ public class Board extends JPanel{
 			}
 		}
 		else if(dir==2){//down
-			while(y!=7&&tag){
+			while(y<7&&tag){
 				y++;
 				if(board[x][y]==0)
 					return new int[]{x,y};
@@ -180,7 +210,7 @@ public class Board extends JPanel{
 			
 		}
 		else if(dir==6){//right
-			while(x!=7&&tag){
+			while(x<7&&tag){
 				x++;
 				if(board[x][y]==0)
 					return new int[]{x,y};
@@ -189,7 +219,7 @@ public class Board extends JPanel{
 			}
 		}
 		else if(dir==4){//left
-			while(x!=0&&tag){
+			while(x>0&&tag){
 				x--;
 				if(board[x][y]==0)
 					return new int[]{x,y};
@@ -199,7 +229,7 @@ public class Board extends JPanel{
 			
 		}
 		else if(dir==9){//rightup
-			while(x!=7&&y!=0&&tag){
+			while(x<7&&y>0&&tag){
 				x++;
 				y--;
 				if(board[x][y]==0)
@@ -210,7 +240,7 @@ public class Board extends JPanel{
 		}
 		
 		else if(dir==3){//rightdown
-			while(x!=7&&y!=7&&tag){
+			while(x<7&&y<7&&tag){
 				x++;
 				y++;
 				if(board[x][y]==0)
@@ -221,7 +251,7 @@ public class Board extends JPanel{
 		}
 
 		else if(dir==1){//leftdown
-			while(x!=0&&y!=7&&tag){
+			while(x>0&&y<7&&tag){
 				x--;
 				y++;
 				if(board[x][y]==0)
@@ -232,7 +262,7 @@ public class Board extends JPanel{
 		}
 
 		else if(dir==7){//leftup
-			while(x!=0&&y!=0&&tag){
+			while(x>0&&y>0&&tag){
 				x--;
 				y--;
 				if(board[x][y]==0)
@@ -242,7 +272,8 @@ public class Board extends JPanel{
 			}
 		}
 		
-		return new int[]{-1,-1};
+		
+		return new int[]{9,9};
 	}
 	
 	/*
@@ -427,9 +458,15 @@ public class Board extends JPanel{
 	
 	public void updateScore(){//calculate the total score of the board after each round
 		count = 0;
+		blackscore=0;
+		whitescore=0;
 		for(int j = 0; j<board.length; j++){
 			for(int i = 0; i<board[0].length;i++){
 			count += count + board[i][j];
+			if(board[i][j]==BLACK)
+				blackscore++;
+			if(board[i][j]==WHITE)
+				whitescore++;
 			}
 		}
 	}
@@ -443,7 +480,13 @@ public class Board extends JPanel{
 		g.setFont(new Font(Font.MONOSPACED,1,20));
 		
 		String player = (currentPlayer==1?"BLACK":"WHITE");
-		g.drawString("CurrentPlayer: "+player, 150, 500);
+		g.drawString("Current Player: "+player, 150, 500);
+		g.setFont(new Font(Font.MONOSPACED,1,15));
+		g.drawString("Black Score",470,200);
+		g.drawString(""+blackscore,470,250);
+		g.drawString("White Score",470,300);
+		g.drawString(""+whitescore,470,350);
+
 		for(int i = 0;i<8;i++)
 			for(int j = 0;j<8;j++)
 			{
@@ -506,7 +549,6 @@ public class Board extends JPanel{
 			int b = ((y-50)/50);
 			if(a>-1&&a<8&&b>-1&&b<8)
 			place(a,b);
-			System.out.println("X: "+((x-50)/50)+"  Y: "+((y-50)/50));
 			repaint();
 			
 		}
