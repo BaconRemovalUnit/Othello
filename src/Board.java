@@ -53,22 +53,24 @@ public class Board extends JPanel{
 	
 	public void place(int x, int y){
 		if(!gg)
-		if(!isFull())
 		{
-		if(canPlace(x,y,currentPlayer)){
-		try{
-			flip(x,y,currentPlayer);	
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		updateScore();
-		currentPlayer = currentPlayer * -1;//flip side
-		}
-		else{
-			System.err.println("NOT A VALID MOVE");
-		}
+			if(!isFull()){
+				if(canPlace(x,y,currentPlayer)){
+				try{
+					flip(x,y,currentPlayer);	
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				updateScore();
+				currentPlayer = currentPlayer * -1;//flip side
+				}
+				else{
+					System.err.println("NOT A VALID MOVE");
+				}
+			}
+			else
+				gg = true;
 		}
 		else{//game finished
 			if(blackscore==whitescore)
@@ -77,9 +79,7 @@ public class Board extends JPanel{
 			String winner = (blackscore>whitescore)?"BLACK":"WHITE";
 			JOptionPane.showMessageDialog(null, winner+" won!", "Congratulations!",JOptionPane.PLAIN_MESSAGE); 
 			}
-			gg = true;
 		}
-			
 	}
 
 	public boolean isFull() {
@@ -97,8 +97,11 @@ public class Board extends JPanel{
 			if(board[x][y]!=0)
 				return false;
 			ArrayList<Point> list = genMovable(currentPlayer);
-			if(list.size()==0)
+			if(list.size()==0){
+				if(whitescore==0||blackscore==0)
+					gg= true;
 				this.currentPlayer = this.currentPlayer*-1;
+			}
 			Iterator<Point> iter = list.iterator();
 			while(iter.hasNext()){
 				Point current = iter.next();
