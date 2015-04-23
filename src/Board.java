@@ -30,7 +30,7 @@ public class Board extends JPanel{
 	private boolean gg = false;
 	
 	int[][] board = new int[8][8];
-	int count;
+	int count;//miao
 	int whitescore = 2;
 	int blackscore = 2;
 	
