@@ -23,7 +23,7 @@ import javax.swing.JPanel;
  * 2.genChild
  * 3.
  */
-public class Board extends JPanel{
+public class Board {
 	private final int WHITE = -1;//O white
 	private final int BLACK = 1;//X black
 	private final int BLANK = 0;
@@ -36,12 +36,11 @@ public class Board extends JPanel{
 	int blackscore = 2;
 	int alpha = Integer.MIN_VALUE;
 	int beta = Integer.MAX_VALUE;
+	int depth = 8;//default depth
+	ArrayList<Board> kids = new ArrayList<Board>();
+	Board parent = null;
 	
 	public Board(){
-		LocationListener listen = new LocationListener();
-		addMouseListener(listen);
-		addMouseMotionListener(listen);
-		
 		for(int i = 0; i<board.length; i++){
 			for(int j = 0; j<board[0].length;j++){
 				board[i][j] = 0;
@@ -52,12 +51,24 @@ public class Board extends JPanel{
 		board[3][4]=1;
 		board[4][3]=1;
 		score = 0;
+		genChildren();
+	}
+	
+	public Board(int depth){
+		this.depth = depth-1;
 	}
 	
 	public boolean isOver(){
 		return gg;
 	}
 	
+	public void printTree() {
+		for(int i = 0; i< kids.size(); i++){
+			Board temp = kids.get(i);
+			temp.print();
+			temp.printTree();
+		}
+	}
 	
 	public void place(int x, int y){
 		if(!gg)
@@ -198,18 +209,23 @@ public class Board extends JPanel{
 	}
 
 
-	public ArrayList<Board> genChildren(){
-		int color = currentPlayer;
-		ArrayList<Board> boards = new ArrayList<Board>();
-		ArrayList<Point> points =  genMovable(color);
-		for(int i = 0; i<points.size(); i++){
-			Board temp = copyBoard();
-			Point cord = points.get(i);
-			temp.place(cord.x, cord.y);
-			boards.add(temp);
+	public void genChildren(){
+		if(depth>0){
+			int color = currentPlayer;
+			ArrayList<Board> boards = new ArrayList<Board>();
+			ArrayList<Point> points =  genMovable(color);
+			for(int i = 0; i<points.size(); i++){
+				Board temp = copyBoard();
+				Point cord = points.get(i);
+				temp.place(cord.x, cord.y);
+				temp.genChildren();
+				boards.add(temp);
+			}
+			kids = boards;
 		}
-		return boards;
 	}
+	
+	
 	
 	private boolean inGrid(int[] arr) {		
 		return arr[0]>-1&&arr[0]<8&&arr[1]>-1&&arr[1]<8;
@@ -474,7 +490,7 @@ public class Board extends JPanel{
 
 	//create a new instace of the board
 	public Board copyBoard(){
-		Board b = new Board();
+		Board b = new Board(this.depth);
 		b.currentPlayer = this.currentPlayer;
 		b.blackscore = this.blackscore;
 		b.whitescore = this.whitescore;
@@ -511,63 +527,6 @@ public class Board extends JPanel{
 			}
 		}
 	}
-	
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);
-		
-		g.setColor(new Color(210,105,30));
-		g.fillRect(0, 0, 600, 600);
-		g.setColor(Color.black);
-		g.setFont(new Font(Font.MONOSPACED,1,20));
-		
-		String player = (currentPlayer==1?"BLACK":"WHITE");
-		g.drawString("Current Player: "+player, 150, 500);
-		g.setFont(new Font(Font.MONOSPACED,1,15));
-		g.drawString("Black Score",470,200);
-		g.drawString(""+blackscore,470,250);
-		g.drawString("White Score",470,300);
-		g.drawString(""+whitescore,470,350);
-
-		for(int i = 0;i<8;i++)
-			for(int j = 0;j<8;j++)
-			{
-				if((i+j)%2==0){
-					g.setColor(new Color(0,70,0));
-					g.fillRect(i*50+50, j*50+50, 50, 50);
-				}
-				else{
-					g.setColor(new Color(0,100,0));
-					g.fillRect(i*50+50, j*50+50, 50, 50);
-					}
-			}
-		
-		for(int j = 0; j<board.length; j++){
-			for(int i = 0; i<board[0].length;i++){
-				if(board[i][j] == BLACK){
-					g.setColor(Color.BLACK);
-					g.fillOval(i*50+50, j*50+50, 50, 50);
-				}
-				else if(board[i][j] == WHITE){
-					g.setColor(Color.WHITE);
-					g.fillOval(i*50+50, j*50+50, 50, 50);
-				}
-			}
-		}
-		
-		ArrayList<Point> list = genMovable(currentPlayer);
-		Iterator<Point> iter = list.iterator();
-		while(iter.hasNext()){
-			Point temp = iter.next();
-			g.setColor(Color.GRAY);
-			g.drawOval(temp.x*50+50, temp.y*50+50, 50, 50);
-				
-		}
-		
-        ArrayList<Board> b = this.genChildren();
-        for(Board temp: b){
-        	temp.print();
-        }
-	}
 
 	public void print(){//can be extended to paint
 		System.out.println("---------------------------------------------------------");
@@ -583,25 +542,5 @@ public class Board extends JPanel{
 			System.out.println();
 		}
 	}
-	
-	private class LocationListener implements MouseListener,MouseMotionListener {
 
-		public void mouseDragged(MouseEvent arg0) {}
-		public void mouseMoved(MouseEvent arg0) {}
-		public void mouseClicked(MouseEvent e) {
-			int x = e.getX();
-			int y = e.getY();
-			int a = (x-50)/50;
-			int b = ((y-50)/50);
-			if(a>-1&&a<8&&b>-1&&b<8)
-			place(a,b);
-			repaint();
-			
-		}
-
-		public void mouseEntered(MouseEvent arg0) {}
-		public void mouseExited(MouseEvent arg0) {}
-		public void mousePressed(MouseEvent arg0) {}
-		public void mouseReleased(MouseEvent arg0) {}
-	}
 }

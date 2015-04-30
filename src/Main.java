@@ -30,14 +30,16 @@ public class Main {
 //		else me = -1;
 
 			Board a = new Board();
-	        JFrame frame = new JFrame("Othello");
-	        frame.setSize(600, 600);
-	        frame.add(a);
-	        frame.setVisible(true);
-	        frame.setResizable(false);
-	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//	        JFrame frame = new JFrame("Othello");
+//	        frame.setSize(600, 600);
+//	        frame.add(a);
+//	        frame.setVisible(true);
+//	        frame.setResizable(false);
+//	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
 
-	        Tree test = new Tree(a,7);//depth over 7 will cause overflow
-	       test.printAll();
-	}		
+//	private static Tree alphaBeta(Tree t, int depth, int maxValue, int minValue,int j) {
+//		// TODO Auto-generated method stub
+//		
+//	}		
 }
