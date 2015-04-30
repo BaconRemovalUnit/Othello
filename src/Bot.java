@@ -1,6 +1,5 @@
 
-public class Bot {
 
-	
+public class Bot {
 
 }
