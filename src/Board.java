@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -30,9 +31,11 @@ public class Board extends JPanel{
 	private boolean gg = false;
 	
 	int[][] board = new int[8][8];
-	int count;
+	int score;
 	int whitescore = 2;
 	int blackscore = 2;
+	int alpha = Integer.MIN_VALUE;
+	int beta = Integer.MAX_VALUE;
 	
 	public Board(){
 		LocationListener listen = new LocationListener();
@@ -48,8 +51,13 @@ public class Board extends JPanel{
 		board[4][4]=-1;
 		board[3][4]=1;
 		board[4][3]=1;
-		count = 0;
+		score = 0;
 	}
+	
+	public boolean isOver(){
+		return gg;
+	}
+	
 	
 	public void place(int x, int y){
 		if(!gg)
@@ -114,6 +122,10 @@ public class Board extends JPanel{
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public boolean isTerminal(){
+		return  genMovable(currentPlayer).size()==0;
 	}
 	
 	//generate all the posible moves for one player
@@ -182,9 +194,21 @@ public class Board extends JPanel{
 					moves.add(new Point(i,j));
 			}
 		}
-		
-		System.out.println(moves.size());
 		return moves;
+	}
+
+
+	public ArrayList<Board> genChildren(){
+		int color = currentPlayer;
+		ArrayList<Board> boards = new ArrayList<Board>();
+		ArrayList<Point> points =  genMovable(color);
+		for(int i = 0; i<points.size(); i++){
+			Board temp = copyBoard();
+			Point cord = points.get(i);
+			temp.place(cord.x, cord.y);
+			boards.add(temp);
+		}
+		return boards;
 	}
 	
 	private boolean inGrid(int[] arr) {		
@@ -454,10 +478,10 @@ public class Board extends JPanel{
 		b.currentPlayer = this.currentPlayer;
 		b.blackscore = this.blackscore;
 		b.whitescore = this.whitescore;
-		b.count = this.count;
+		b.score = this.score;
 		for(int i = 0; i<8; i++){
 			for(int j = 0; j<8;j++){
-				b.board[i][j] = 0;
+				b.board[i][j] = this.board[i][j];
 			}
 		}
 		return b;
@@ -474,12 +498,12 @@ public class Board extends JPanel{
 	}
 	
 	public void updateScore(){//calculate the total score of the board after each round
-		count = 0;
+		score = 0;
 		blackscore=0;
 		whitescore=0;
 		for(int j = 0; j<board.length; j++){
 			for(int i = 0; i<board[0].length;i++){
-			count += count + board[i][j];
+			score += score + board[i][j];
 			if(board[i][j]==BLACK)
 				blackscore++;
 			if(board[i][j]==WHITE)
@@ -538,6 +562,11 @@ public class Board extends JPanel{
 			g.drawOval(temp.x*50+50, temp.y*50+50, 50, 50);
 				
 		}
+		
+        ArrayList<Board> b = this.genChildren();
+        for(Board temp: b){
+        	temp.print();
+        }
 	}
 
 	public void print(){//can be extended to paint
