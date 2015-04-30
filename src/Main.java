@@ -1,10 +1,3 @@
-import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-
-import javax.swing.JFrame;
 
 
 public class Main {
@@ -30,12 +23,7 @@ public class Main {
 //		else me = -1;
 
 			Board a = new Board();
-//	        JFrame frame = new JFrame("Othello");
-//	        frame.setSize(600, 600);
-//	        frame.add(a);
-//	        frame.setVisible(true);
-//	        frame.setResizable(false);
-//	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 	}
 
 //	private static Tree alphaBeta(Tree t, int depth, int maxValue, int minValue,int j) {

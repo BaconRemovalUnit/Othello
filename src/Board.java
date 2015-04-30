@@ -1,15 +1,8 @@
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
+
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /*
 *1/true is black, -1/false is white
